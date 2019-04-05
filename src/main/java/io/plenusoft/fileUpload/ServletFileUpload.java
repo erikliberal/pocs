@@ -12,7 +12,10 @@ import javax.servlet.http.Part;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Optional;
 
 public class ServletFileUpload extends HttpServlet {
     private String getFileName(Part part) {
@@ -24,12 +27,15 @@ public class ServletFileUpload extends HttpServlet {
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String uploadPath = getServletContext().getRealPath("") + File.separator + "upload";
-        System.out.println(uploadPath);
+        String tempDir=Optional.ofNullable(getServletContext().getAttribute("javax.servlet.context.tempdir")).map(Object::toString)
+            .orElseGet(()->System.getProperty("java.io.tmp"));
+        Path uploadPath = Paths.get(tempDir).resolve("upload");
+        //String uploadPath = getServletContext().getRealPath("") + File.separator + "upload";
         for(String headerName : Collections.list(request.getHeaderNames())){
             System.out.println(headerName+" : "+Collections.list(request.getHeaders(headerName)));
         }
-        File uploadDir = new File(uploadPath);
+        System.out.println(uploadPath);
+        File uploadDir = uploadPath.toFile();
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
         }
