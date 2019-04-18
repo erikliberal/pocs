@@ -1,8 +1,5 @@
 package io.plenusoft.main;
 
-//import org.apache.tomee.embedded.Configuration;
-//import org.apache.tomee.embedded.Container;
-
 import org.apache.tomee.embedded.Configuration;
 import org.apache.tomee.embedded.Container;
 import sun.security.x509.AlgorithmId;
@@ -15,13 +12,10 @@ import sun.security.x509.X500Name;
 import sun.security.x509.X509CertImpl;
 import sun.security.x509.X509CertInfo;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,16 +26,11 @@ import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 public class Main {
 
@@ -131,7 +120,6 @@ public class Main {
                     Files.delete(path);
                     return FileVisitResult.CONTINUE;
                 }
-
                 @Override
                 public FileVisitResult postVisitDirectory(Path path, IOException e) throws IOException {
                     Files.delete(path);

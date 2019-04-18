@@ -77,4 +77,52 @@ var dropZone = document.getElementById('drop_zone');
 dropZone.addEventListener('dragover', handleDragOver, false);
 dropZone.addEventListener('drop', handleFileSelect, false);
 document.getElementById('files').addEventListener('change', handleFileSelect, false);
-console.log('loaded');
+Notification.requestPermission();
+
+
+if ('serviceWorker' in navigator) {
+    if (navigator.serviceWorker.controller) {
+        console.log("Sending 'hi' to controller");
+        navigator.serviceWorker.controller.postMessage("hi");
+    } else {
+        navigator.serviceWorker.register('/js/upload-service-worker.js', {scope: '/js/'}).then(function(reg) {
+            console.log(reg);
+            console.log("Service worker registered, scope: " + reg.scope);
+            console.log("Refresh the page to talk to it.");
+            if(reg.installing) {
+              console.log('Service worker installing');
+            } else if(reg.waiting) {
+              console.log('Service worker installed');
+            } else if(reg.active) {
+              let serviceWorker = reg.active;
+              console.log("scriptURL", serviceWorker.scriptURL);
+              console.log("state", serviceWorker.state);
+              console.log('Service worker active');
+
+              Notification.requestPermission(function(result) {
+                  if (result === 'granted') {
+                    reg.showNotification('Vibration Sample', {
+                        body: 'Buzz! Buzz!',
+                        vibrate: [200, 100, 200, 100, 200, 100, 200],
+                        tag: 'vibration-sample'
+                    });
+                  }
+                });
+
+
+            } else {
+                console.log('dunno');
+            }
+        }).catch(function(error) {
+            // registration failed
+            console.log('Registration failed with ' + error);
+        });
+  }
+  navigator.serviceWorker.addEventListener('message', function(event){
+      if (event.data.type === 'activate'){
+          console.log("Client "+location.href+" Received Message: " + event.data.message);
+      }
+  });
+} else {
+    console.log('Service Worker Unavailable');
+}
